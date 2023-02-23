@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "ES2020",
+        "strict": true,
+        "jsx": "preserve",
+        "moduleResolution": "node",
+
+        "typeRoots": ["./resources/js/@types"]
+
+    },
+    "include": ["./resources/js/**/*"]
+}

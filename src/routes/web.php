@@ -19,4 +19,5 @@ Route::get('/hello', function(){
     return view('index');
 });
 
-Route::get('/index', 'UsersController@index');
+Route::get('/index', 'UsersController@getData');
+Route::get('/getFriends', 'UsersController@getFriends');

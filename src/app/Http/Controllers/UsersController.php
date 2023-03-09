@@ -16,7 +16,11 @@ class UsersController extends Controller
         $this->user = $user;
     }
     
-    public function index(Request $request){
-        return $this->user::all();
+    public function getData(Request $request){
+        return $this->user->getData($request->id);
+    }
+
+    public function getFriends(Request $request){
+        return $this->user->getFriends($request->id);
     }
 }

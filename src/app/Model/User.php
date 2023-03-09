@@ -8,7 +8,12 @@ class User extends Model
 {
     public function getData(int $id)
     {
-        $users = self::find($id);
-        return $users;
+        $user = self::find($id);
+        return $user;
+    }
+    public function getFriends(int $id)
+    {
+        $friends = self::where('id', '!=', $id)->get();
+        return $friends;
     }
 }

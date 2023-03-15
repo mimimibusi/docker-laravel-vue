@@ -22,7 +22,7 @@ export default {
     );
     const getUsers = async () => {
       console.log('test');
-      const {data} = await axios.get('/index', {params: {id: 1}});
+      const {data} = await axios.get('/api/index', {params: {id: 1}});
       console.log(data);
     }
     onMounted(()=>{

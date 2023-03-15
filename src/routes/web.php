@@ -19,5 +19,8 @@ Route::get('/hello', function(){
     return view('index');
 });
 
-Route::get('/index', 'UsersController@getData');
-Route::get('/getFriends', 'UsersController@getFriends');
+Route::get('/{any?}', function () {
+    return view('index');
+})->where('any',
+    '.*'
+);

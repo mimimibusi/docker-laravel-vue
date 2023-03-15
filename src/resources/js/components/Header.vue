@@ -1,5 +1,20 @@
 <template>
 	<div class="headerTab">
+		<!-- <el-menu
+			:default-active="'/friend'"
+			mode="horizontal"
+			router
+		>
+			<el-menu-item
+				v-for="(route, key) in routes"
+				:key="key"
+				:route="{ path: route.path }"
+				:index="route.path"
+				v-show="!route.hidden"
+			>
+				<span>{{ route.label }}</span>
+			</el-menu-item>
+		</el-menu> -->
 		<router-link to="/friend">
 			友達
 		</router-link>
@@ -10,9 +25,20 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 export default{
 	name: 'Header',
+	setup(){
+		const routes = [
+			{label: '友達', path: '/friend'},
+			{label: '設定', path: '/setting'}
+		];
+		const activeIndex = ref('');
+		onMounted(()=>{
+			console.log(activeIndex.value);
+		});
+		return {routes, activeIndex};
+	}
 }
 </script>
 <style scoped>

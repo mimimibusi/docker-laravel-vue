@@ -18,10 +18,10 @@ export default{
 	},
 	name: 'Friend',
 	setup(){
-		const title = ref('ともだちだよー＾＾');
+		const title = ref('友達一覧');
 		const friendLists = ref([]);
 		const getFriends = async ()=>{
-			await axios.get('/getFriends', {params: {id: 1}}).then((res)=>{
+			await axios.get('/api/getFriends', {params: {id: 1}}).then((res)=>{
 				res.data.forEach((friendData)=>{
 					friendLists.value.push(friendData);
 				})

@@ -66,7 +66,7 @@
           scope: SCOPES,
           callback: '', // defined later
         });
-        $client->setRedirectUri('http://34.84.194.211/google');
+        // $client->setRedirectUri('http://34.84.194.211/google');
         gisInited = true;
         maybeEnableButtons();
       }
@@ -96,10 +96,8 @@
         if (gapi.client.getToken() === null) {
           // Prompt the user to select a Google Account and ask for consent to share their data
           // when establishing a new session.
-          console.log(tokenClient);
           tokenClient.requestAccessToken({prompt: 'consent'});
         } else {
-            console.log('222');
           // Skip display of account chooser and consent dialog for an existing session.
           tokenClient.requestAccessToken({prompt: ''});
         }
@@ -126,7 +124,6 @@
        */
       async function listUpcomingEvents() {
         let response;
-        console.log(response);
         try {
           const request = {
             'calendarId': 'primary',

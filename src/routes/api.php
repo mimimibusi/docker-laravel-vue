@@ -18,6 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/Google_Calendar', 'GoogleCalendarController@getEvent');
+Route::post('/saveAccessToken', 'GoogleCalendarController@saveAccessToken');
 
 Route::get('/index', 'UsersController@getData');
 Route::get('/getFriends', 'UsersController@getFriends');

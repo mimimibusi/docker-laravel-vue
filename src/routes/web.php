@@ -46,10 +46,16 @@ Route::get('/google', function () {
 
 Route::get('/hello', function(){
     return view('index');
-});
+})->middleware('auth');
+
+Route::get('/index', 'UsersController@getData')->middleware('auth');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/{any?}', function () {
     return view('index');
 })->where('any',
     '.*'
-);
+)->middleware('auth');

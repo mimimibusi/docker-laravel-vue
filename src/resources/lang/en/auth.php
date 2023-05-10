@@ -13,7 +13,10 @@ return [
     |
     */
 
-    'failed' => 'These credentials do not match our records.',
-    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    // 'failed' => 'These credentials do not match our records.',
+    // 'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'failed' => "ログイン認証に失敗しました。",
+    'throttle' => 'ログイン試行回数が多いため、ブロックしました。:seconds 秒後に再度お試しください。',
+    'googleAccountExist' => "Googleログインで認証してください。",
 
 ];

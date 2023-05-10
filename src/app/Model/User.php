@@ -13,7 +13,7 @@ class User extends Model implements AuthenticatableContract
     use Authenticatable;
 
     protected $fillable = [
-        'name', 'email', 'password'
+        'name', 'email', 'password', 'google_oauth',
     ];
 
     public function getFriends(int $id)

@@ -24,8 +24,10 @@ class OAuthLoginController extends Controller
     {
         $googleUser = Socialite::driver('google')->user();
         \Log::info($googleUser->token);
+        \Log::info($googleUser->refreshToken);
         $authUser = Auth::user();
         $authUser->access_token = $googleUser->token;
+        $authUser->refresh_token = $googleUser->refreshToken;
         $authUser->save();
         // $this->user->where('id', Auth::id())->update(['access_token' => $googleUser->token]);
         return redirect('/setting');

@@ -134,7 +134,6 @@
             'orderBy': 'startTime',
           };
           response = await gapi.client.calendar.events.list(request);
-          await saveAccessToken();
         } catch (err) {
           document.getElementById('content').innerText = err.message;
           return;
@@ -150,14 +149,6 @@
             (str, event) => `${str}${event.summary} (${event.start.dateTime || event.start.date})\n`,
             'Events:\n');
         document.getElementById('content').innerText = output;
-      }
-
-      async function saveAccessToken() {
-        let accessToken = await gapi.client.getToken();
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/api/saveAccessToken', true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.send('accessToken=' + accessToken.access_token);
       }
     </script>
     <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>

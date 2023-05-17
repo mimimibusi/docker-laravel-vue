@@ -23,6 +23,8 @@ Route::middleware('auth')->group(function(){
     Route::get('/login/google-oauth', 'OAuthLoginController@getGoogleAuth');
     Route::get('/login/google-oauth/callback', 'OAuthLoginController@authGoogleCallback');
     Route::get('/judgeHaveAccessToken', 'OAuthLoginController@judgeHaveAccessToken');
+
+    Route::get('/googleCalendar', 'GoogleCalendarController@index');
     
     Route::get('/hello', function(){
         return view('index');

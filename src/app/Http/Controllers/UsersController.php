@@ -17,11 +17,13 @@ class UsersController extends Controller
         $this->user = $user;
     }
     
-    public function getData(){
+    public function getData()
+    {
         return Auth::user();
     }
 
-    public function getFriends(Request $request){
+    public function getFriends(Request $request)
+    {
         return $this->user->getFriends($request->id);
     }
 }

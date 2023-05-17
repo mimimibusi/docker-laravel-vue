@@ -1,6 +1,7 @@
 <template>
 	<div>{{ title }}</div>
-	<a href="login/google-oauth" v-if="!accessTokenFlag">Google認証aタグ</a>
+	<a href="login/google-oauth">Google認証aタグ</a>
+	<!-- <a href="login/google-oauth" v-if="accessTokenFlag">Google認証aタグ</a> -->
 	<!-- <a href="auth/google" target="_blank" rel="noopener norefferrer">Google認証aタグ</a> -->
 </template>
 
@@ -24,9 +25,11 @@ export default{
 		}
 
 		const getCalendar = async ()=>{
-			// await axios.get('/api/Google_Calendar').then((res)=>{
-			// 	console.log(res);
-			// });
+			if (accessTokenFlag) {
+				await axios.get('/googleCalendar').then((res)=>{
+					console.log(res);
+				});
+			}
 			console.log('せっていだしょー');
 		}
 

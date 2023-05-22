@@ -15,14 +15,14 @@ export default{
 		const title = ref('せっていだよー＾＾');
 		const accessTokenFlag = ref(true); //vuexにユーザー情報持たせてそれで判定しても良いかも
 
-		const judgeHaveAccessToken = async ()=>{
-			await axios.get('/judgeHaveAccessToken').then((res)=>{
-				accessTokenFlag.value = res.data.result;
-				console.log(accessTokenFlag.value);
-			}).catch((error)=>{
-				console.log('うまくいかなかったです');
-			})
-		}
+		// const judgeHaveAccessToken = async ()=>{
+		// 	await axios.get('/judgeHaveAccessToken').then((res)=>{
+		// 		accessTokenFlag.value = res.data.result;
+		// 		console.log(accessTokenFlag.value);
+		// 	}).catch((error)=>{
+		// 		console.log('うまくいかなかったです');
+		// 	})
+		// }
 
 		const getCalendar = async ()=>{
 			if (accessTokenFlag) {
@@ -34,7 +34,7 @@ export default{
 		}
 
 		onMounted(()=>{
-			judgeHaveAccessToken();
+			// judgeHaveAccessToken();
 			getCalendar();
 		})
 		return {

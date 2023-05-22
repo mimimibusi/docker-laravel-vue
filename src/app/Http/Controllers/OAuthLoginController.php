@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Model\User;
 use Google_Client;
+use Google\Service\Calendar as Calendar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -31,12 +32,12 @@ class OAuthLoginController extends Controller
         // \Log::info($auth_url);
         // return Redirect::to($auth_url)->send();
         
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')->scopes([Calendar::CALENDAR_EVENTS])->redirect();
     }
 
     public function authGoogleCallBack(Request $request)
     {
-        \Log::info($request);
+        // \Log::info($request);
         // $data = $this->client->fetchAccessTokenWithAuthCode($request->input('code'));   
         // \Log::info($data);
         // $this->client->setAccessToken(json_encode($data));  //アクセストークンはJSONで設定
@@ -52,7 +53,6 @@ class OAuthLoginController extends Controller
         // ])->save();
 
         $googleUser = Socialite::driver('google')->user();
-        \Log::info(print_r($googleUser, true));
         $authUser = Auth::user();
         $authUser->access_token = $googleUser->token;
         // $authUser->refresh_token = $googleUser->refreshToken;

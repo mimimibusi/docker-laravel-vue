@@ -2,7 +2,6 @@
 	<div>{{ title }}</div>
 	<a href="login/google-oauth">Google認証aタグ</a>
 	<!-- <a href="login/google-oauth" v-if="accessTokenFlag">Google認証aタグ</a> -->
-	<!-- <a href="auth/google" target="_blank" rel="noopener norefferrer">Google認証aタグ</a> -->
 </template>
 
 <script>

@@ -19,37 +19,26 @@ Route::get('/google', function () {
     return view('google');
 });
 
-// Route::get('/Google_Calendar', function () {
-//     $client = new Google\Client();
-//     $client->setClientId(config('services.google.client_id'));
-//     $client->setClientSecret(config('services.google.client_secret'));
-//     $client->setRedirectUri(config('services.google.redirect'));
-//     $client->addScope(config('services.google.scopes'));
+Route::middleware('auth')->group(function(){
+    Route::get('/login/google-oauth', 'OAuthLoginController@getGoogleAuth');
+    Route::get('/login/google-oauth/callback', 'OAuthLoginController@authGoogleCallback');
+    Route::get('/judgeHaveAccessToken', 'OAuthLoginController@judgeHaveAccessToken');
 
-//     $authUrl = $client->createAuthUrl();
-
-//     return redirect($authUrl);
-// });
-
-// Route::get('/callback', function () {
-//     $client = new Google\Client();
-//     $client->setClientId(config('services.google.client_id'));
-//     $client->setClientSecret(config('services.google.client_secret'));
-//     $client->setRedirectUri(config('services.google.redirect'));
-//     $client->addScope(config('services.google.scopes'));
-
-//     $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
-//     $client->setAccessToken($token);
-
-//     return $token;
-// });
-
-Route::get('/hello', function(){
-    return view('index');
+    Route::get('/googleCalendar', 'GoogleCalendarController@getEvent');
+    
+    Route::get('/hello', function(){
+        return view('index');
+    });
+    
+    Route::get('/index', 'UsersController@getData');
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/{any?}', function () {
     return view('index');
 })->where('any',
     '.*'
-);
+)->middleware('auth');

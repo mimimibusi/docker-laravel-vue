@@ -1,6 +1,9 @@
 <template>
 	<div>{{ title }}</div>
+	<Calendar />
 	<a href="login/google-oauth">Google認証aタグ</a>
+	<br>
+	<button @click="createCalendarEvent"></button>
 	<!-- <a href="login/google-oauth" v-if="accessTokenFlag">Google認証aタグ</a> -->
 </template>
 
@@ -30,10 +33,17 @@ export default{
 		const getCalendar = async ()=>{
 			if (accessTokenFlag) {
 				await axios.get('/googleCalendar').then((res)=>{
-					console.log(res);
+					// console.log(res);
 				});
 			}
-			console.log('せっていだしょー');
+		}
+
+		const createCalendarEvent = async ()=>{
+			await axios.post('/createCalendarEvent', {
+				
+			}).then((res)=>{
+				// console.log(res);
+			})
 		}
 
 		onMounted(()=>{
@@ -43,6 +53,7 @@ export default{
 		return {
 			title,
 			accessTokenFlag,
+			createCalendarEvent
 		}
 	}
 }

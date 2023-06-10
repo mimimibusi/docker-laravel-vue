@@ -25,7 +25,7 @@ Route::middleware('auth')->group(function(){
     Route::get('/judgeHaveAccessToken', 'OAuthLoginController@judgeHaveAccessToken');
 
     Route::get('/googleCalendar', 'GoogleCalendarController@getEvent');
-    Route::get('/createEvent', 'GoogleCalendarController@createEvent');
+    Route::post('/updateSchedule', 'GoogleCalendarController@updateSchedule');
     
     Route::get('/hello', function(){
         return view('index');

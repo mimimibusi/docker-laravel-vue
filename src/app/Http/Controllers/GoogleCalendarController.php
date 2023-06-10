@@ -35,9 +35,9 @@ class GoogleCalendarController extends Controller
             Google_Service_Calendar::CALENDAR_SETTINGS_READONLY,
         ];
         $this->googleClient = new Google_Client();
-        $this->googleClient->setAuthConfig(storage_path('client_secret_35578369161-c1tfvcftqi12s64unt95io9s3m5pp5bg.apps.googleusercontent.com (1).json'));
+        // $this->googleClient->setAuthConfig(storage_path('client_secret_35578369161-c1tfvcftqi12s64unt95io9s3m5pp5bg.apps.googleusercontent.com (1).json'));
         $this->googleClient->setAccessToken(Auth::user()->access_token);
-        $this->googleClient->addScope($scopes);
+        // $this->googleClient->addScope($scopes);
         $service = new Google_Service_Calendar($this->googleClient);
         $optParams = array(
             'orderBy' => 'startTime',
@@ -75,20 +75,21 @@ class GoogleCalendarController extends Controller
         }
     }
 
-    public function createEvent(Request $request)
+    public function updateSchedule(Request $request)
     {
-        $event = new Google_Service_Calendar_Event([
-            'summary' => $request->summary,
-            'start' => [
-                'dateTime' => Carbon::parse($request['start'])->format(DATE_RFC3339)
-            ],
-            'end' => [
-                'dateTime' => Carbon::parse($request['end'])->format(DATE_RFC3339)
-            ]
-        ]);
-        $service = new Google_Service_Calendar($this->googleClient);
-        $this->googleClient->setAccessToken(Auth::user()->access_token);
-        $newEvent = $service->events->insert('primary', $event);
-        return $newEvent->id;
+        \Log::info($request);
+    //     $event = new Google_Service_Calendar_Event([
+    //         'summary' => $request->summary,
+    //         'start' => [
+    //             'dateTime' => Carbon::parse($request['start'])->format(DATE_RFC3339)
+    //         ],
+    //         'end' => [
+    //             'dateTime' => Carbon::parse($request['end'])->format(DATE_RFC3339)
+    //         ]
+    //     ]);
+    //     $service = new Google_Service_Calendar($this->googleClient);
+    //     $this->googleClient->setAccessToken(Auth::user()->access_token);
+    //     $newEvent = $service->events->insert('primary', $event);
+    //     return $newEvent->id;
     }
 }

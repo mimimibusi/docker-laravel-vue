@@ -1,5 +1,5 @@
 <template>
-	<div class="headerTab">
+	<div class="header-tab">
 		<!-- <el-menu
 			:default-active="'/friend'"
 			mode="horizontal"
@@ -33,16 +33,12 @@ export default{
 			{label: '友達', path: '/friend'},
 			{label: '設定', path: '/setting'}
 		];
-		const activeIndex = ref('');
-		onMounted(()=>{
-			console.log(activeIndex.value);
-		});
-		return {routes, activeIndex};
+		return {routes};
 	}
 }
 </script>
 <style scoped>
-.headerTab{
+.header-tab{
 	display: flex;
 	justify-content: space-around;
 	border: 1px solid #d4d6da;

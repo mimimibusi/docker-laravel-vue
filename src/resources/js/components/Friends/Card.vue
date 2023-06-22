@@ -1,5 +1,5 @@
 <template>
-	<div class="friendChatCard">
+	<div class="friend-chat-card">
 		<p>{{ friendList.name }}</p>
 	</div>
 </template>
@@ -20,7 +20,7 @@ p{
 	margin-top: 0;
 	margin-bottom: 0;
 }
-.friendChatCard{
+.friend-chat-card{
 	/* border-top: 1px solid #d4d6da; */
 	border-bottom: 1px solid #d4d6da;
 	height: 100px;

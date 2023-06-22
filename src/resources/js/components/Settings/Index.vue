@@ -3,7 +3,6 @@
 	<Calendar />
 	<a href="login/google-oauth">Google認証aタグ</a>
 	<br>
-	<button @click="createCalendarEvent"></button>
 	<!-- <a href="login/google-oauth" v-if="accessTokenFlag">Google認証aタグ</a> -->
 </template>
 
@@ -30,30 +29,13 @@ export default{
 		// 	})
 		// }
 
-		const getCalendar = async ()=>{
-			if (accessTokenFlag) {
-				await axios.get('/googleCalendar').then((res)=>{
-					// console.log(res);
-				});
-			}
-		}
-
-		const createCalendarEvent = async ()=>{
-			await axios.post('/createCalendarEvent', {
-				
-			}).then((res)=>{
-				// console.log(res);
-			})
-		}
 
 		onMounted(()=>{
 			// judgeHaveAccessToken();
-			getCalendar();
 		})
 		return {
 			title,
-			accessTokenFlag,
-			createCalendarEvent
+			accessTokenFlag
 		}
 	}
 }

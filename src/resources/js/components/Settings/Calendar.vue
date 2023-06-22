@@ -8,8 +8,6 @@
     <div class="button-area">
       <button @click="prevMonth()">前の月</button>
       <button @click="nextMonth()">次の月</button>
-      <button v-if="!calendarVisible" @click="editCalendar()">編集</button>
-      <button v-else @click="editCalendar()">キャンセル</button>
     </div>
     <div class="calendar">
       <div class="calendar-weekly">
@@ -23,42 +21,30 @@
           :class="{outside: currentMonth !== day.month}"
           v-for="(day, index) in week"
           :key="index"
-          @dragenter="setDragDate(day.date)"
-          @drop="dragEnd($event)"
+          @drop="dragEnd($event, day.date)"
           @dragover.prevent
-          :disabled="calendarVisible"
         >
           <div class="calendar-day">
-            {{ day.day }}
+            <p :class="{today: day.date === today}">
+              {{ day.day }}
+            </p>
           </div>
-          <!-- <div v-for="dayEvent in day.dayEvents" :key="dayEvent.id">
-            <div
-              class="calendar-event"
-              :style="`background-color:${dayEvent.color};`"
-              draggable="true"
-              @dragstart="dragStart($event, dayEvent.id)"
-            >
-              {{ dayEvent.name }}
-              {{ dayEvent.width }}
-            </div>
-          </div> -->
           <div v-for="dayEvent in day.dayEvents" :key="dayEvent.id">
             <div
               v-if="dayEvent.width"
-              class="calendar-event"
-              :style="`width:${dayEvent.width}%;background-color:${dayEvent.color};`"
-              draggable="true"
-              @dragstart="dragStart($event, dayEvent.id)"
             >
-              {{ dayEvent.name }}
-              {{ dayEvent.width }}
+              <CalendarEvent
+                :event="dayEvent"
+                :eventId="dayEvent.id"
+                @dragStart="dragStart"
+              />
             </div>
             <div v-else style="height:26px"></div>
           </div>
         </div>
       </div>
     </div>
-    <button @click="updateEvents()" :disabled="calendarVisible">更新</button>
+    <button @click="updateEvents()">更新</button>
   </div>
 </template>
 
@@ -66,22 +52,24 @@
 import { watch, ref, reactive, onMounted, computed } from 'vue';
 import { Calendar, DatePicker } from 'v-calendar';
 import 'v-calendar/style.css';
-// import CalendarEvents from './CalendarEvents';
+import CalendarEvent from './CalendarEvent';
 import axios from 'axios';
 import moment from 'moment';
 
 export default {
   components: {
-    // CalendarEvents,
+    CalendarEvent,
     Calendar,
     DatePicker,
   },
+  emits: ['getCalendar'],
   name: 'Calendar',
-  setup(){
+  setup(_, {emit}){
     let defaultDateTime = new Date();
     defaultDateTime.setHours(10);
     defaultDateTime.setMinutes(0);
     const date = ref(defaultDateTime);
+    const today = moment().format('YYYY-MM-DD');
 
     const currentDate = ref(moment());
     const calendarVisible = ref(false);
@@ -96,7 +84,6 @@ export default {
       { id: 4, name: "有給", start: "2023-06-09", end:"2023-06-10", color:"dimgray"},
       { id: 5, name: "あべべべ", start: "2023-06-09", end:"2023-06-11", color:"dimgray"},
     ]);
-    const dragDate = ref(null);
 
     const getStartDate = ()=>{
       const date = currentDate.value.clone().startOf('month');
@@ -175,14 +162,10 @@ export default {
           if(eventStartDate === Date){
             [stackIndex, dayEvents] = getStackEvents(event, youbiNum, stackIndex, dayEvents, startedEvents, date);
             let width = getEventWidth(eventStartDate, eventEndDate, youbiNum);
-            console.log('eventStartDate === Date');
-            console.log(width);
             dayEvents.push({...event, width});
           }else if(youbiNum === 0){
             [stackIndex, dayEvents] = getStackEvents(event, youbiNum, stackIndex, dayEvents, startedEvents, date);
             let width = getEventWidth(date, eventEndDate, youbiNum);
-            console.log('youbiNum === 0');
-            console.log(width);
             dayEvents.push({...event, width});
           }else{
             startedEvents.push(event)
@@ -210,7 +193,6 @@ export default {
     }
 
     const getStackEvents = (event, youbiNum, stackIndex, dayEvents, startedEvents, start)=>{
-      // console.log(event);
       [stackIndex, dayEvents] = getStartedEvents(stackIndex, startedEvents, dayEvents);
       Object.assign(event,{
         stackIndex
@@ -220,9 +202,6 @@ export default {
     }
 
     const getStartedEvents = (stackIndex, startedEvents, dayEvents)=>{
-      console.log(stackIndex);
-      console.log(startedEvents);
-      console.log(dayEvents);
       let startedEvent;
       do{
         startedEvent = startedEvents.find(event => event.stackIndex === stackIndex)
@@ -240,17 +219,12 @@ export default {
       event.dataTransfer.setData("eventId", eventId);
     }
 
-    const dragEnd = (event)=>{
-      const date = dragDate.value;
+    const dragEnd = (event, date)=>{
       let eventId = event.dataTransfer.getData("eventId");
-      let dragEvent = events.value.find(event => event.id == eventId)
+      let dragEvent = events.value.find(event => event.id == eventId);
       let betweenDays = moment(dragEvent.end).diff(moment(dragEvent.start), "days");
       dragEvent.start = date;
       dragEvent.end = moment(dragEvent.start).add(betweenDays, "days").format("YYYY-MM-DD");
-    }
-
-    const setDragDate = (date)=>{
-      dragDate.value = date;
     }
 
     const editCalendar = ()=>{
@@ -265,6 +239,12 @@ export default {
         alert('更新失敗しました');
       })
     }
+
+    const getCalendar = async (currentDate)=>{
+      await axios.get('/googleCalendar?currentMonth=' + currentDate).then((res)=>{
+        console.log(res);
+      });
+		}
 
     const calendars = computed(()=>{
       return createCalendar();
@@ -285,6 +265,7 @@ export default {
     })
 
     const currentMonth = computed(()=>{
+      getCalendar(currentDate.value.format('YYYY-MM'));
       return currentDate.value.format('YYYY-MM');
     })
 
@@ -292,16 +273,9 @@ export default {
       hours: { min: 7, max: 23},
       minutes: { interval: 5 },
     });
-    watch(date, ()=>{
-      console.log(defaultDateTime);
-      console.log(date.value);
-    })
-
-    // onMounted(()=>{
-      // createCalendar();
-    // });
 
     return {
+      today,
       youbiArray,
       date,
       rules,
@@ -313,14 +287,11 @@ export default {
       currentMonth,
       dragStart,
       dragEnd,
-      setDragDate,
       editCalendar,
       updateEvents,
-      clickCalendarDaily,
-      clickCalendarEvent
     }
   }
-}
+};
 </script>
 
 <style>
@@ -368,10 +339,13 @@ export default {
 .calendar-day{
   text-align: center;
 }
+.today{
+  color: white;
+  background-color: rgb(124, 167, 253);
+}
 
 .calendar-event{
   color:white;
-  background-color: aqua;
   margin-bottom:1px;
   height:25px;
   line-height:25px;
@@ -379,6 +353,7 @@ export default {
   z-index:1;
   border-radius:4px;
   padding-left:4px;
+  cursor: pointer;
 }
 
 .outside{

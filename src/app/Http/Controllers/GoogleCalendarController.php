@@ -25,7 +25,7 @@ class GoogleCalendarController extends Controller
         // $this->googleCalendarServiceProvider = $googleCalendarServiceProvider;
     }
 
-    public function getEvent()
+    public function getEvent(Request $request)
     {
         $scopes = [
             Google_Service_Calendar::CALENDAR,
@@ -42,7 +42,8 @@ class GoogleCalendarController extends Controller
         $optParams = array(
             'orderBy' => 'startTime',
             'singleEvents' => true,
-            'timeMin' => Carbon::now()->format(DATE_RFC3339)
+            'timeMin' => Carbon::parse($request->currentMonth)->startOfMonth()->format(DATE_RFC3339),
+            'timeMax' => Carbon::parse($request->currentMonth)->endOfMonth()->format(DATE_RFC3339)
         );
         try{
             $events = $service->events->listEvents('primary', $optParams);
@@ -54,7 +55,8 @@ class GoogleCalendarController extends Controller
                             'id' => $event->id,
                             'summary' => $event->getSummary(),
                             'start' => $event->start->dateTime,
-                            'end' => $event->end->dateTime
+                            'end' => $event->end->dateTime,
+                            'colorId' => $event->colorId,
                         ];
                     }
                 }

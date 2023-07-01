@@ -10,6 +10,6 @@
 //  */
 
 const mix = require("laravel-mix");
-mix.ts("resources/js/app.js", "public/js") //app.tsだとここがanyとかでエラー
+mix.ts("resources/js/app.ts", "public/js/app.js") //app.tsだとここがanyとかでエラー
     .sass("resources/sass/app.scss", "public/css")
-    .vue();
+    .vue({ version: 3 });

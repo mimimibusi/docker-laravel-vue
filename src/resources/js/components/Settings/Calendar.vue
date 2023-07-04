@@ -1,8 +1,4 @@
 <template id="my-component-template">
-  <!-- <div> -->
-    <!-- <Calendar borderless /> -->
-    <!-- <DatePicker v-model="date" mode="dateTime" :rules="rules" /> -->
-  <!-- </div> -->
   <h1>{{ displayDate }}</h1>
   <div class="content">
     <div class="button-area">
@@ -48,41 +44,33 @@
   </div>
 </template>
 
-<script>
-import { watch, ref, reactive, onMounted, computed } from 'vue';
-import { Calendar, DatePicker } from 'v-calendar';
-import 'v-calendar/style.css';
-import CalendarEvent from './CalendarEvent';
+<script lang="ts">
+import { ref, computed } from 'vue';
+import CalendarEvent from './CalendarEvent.vue';
 import axios from 'axios';
 import moment from 'moment';
+import { Event } from './types';
 
 export default {
   components: {
     CalendarEvent,
-    Calendar,
-    DatePicker,
   },
-  emits: ['getCalendar'],
   name: 'Calendar',
-  setup(_, {emit}){
-    let defaultDateTime = new Date();
-    defaultDateTime.setHours(10);
-    defaultDateTime.setMinutes(0);
-    const date = ref(defaultDateTime);
+  setup(){
     const today = moment().format('YYYY-MM-DD');
 
     const currentDate = ref(moment());
-    const calendarVisible = ref(false);
+    const calendarVisible = ref<Boolean>(false);
 
     const youbiArray = ['日', '月', '火', '水', '木', '金', '土'];
 
-    const events = ref([
-      { id: 1, name: "ミーティング", start: "2023-06-01", end:"2023-06-01", color:"blue"},
-      { id: 2, name: "イベント", start: "2023-06-02", end:"2023-06-03", color:"limegreen"},
-      { id: 3, name: "会議", start: "2023-06-06", end:"2023-06-06", color:"deepskyblue"},
-      { id: 6, name: "海外旅行", start: "2023-06-08", end:"2023-06-11", color:"navy"},
-      { id: 4, name: "有給", start: "2023-06-09", end:"2023-06-10", color:"dimgray"},
-      { id: 5, name: "あべべべ", start: "2023-06-09", end:"2023-06-11", color:"dimgray"},
+    const events = ref<Event[]>([
+      { id: 1, name: "ミーティング", start: "2023-07-01", end:"2023-07-01", color:"blue"},
+      { id: 2, name: "イベント", start: "2023-07-02", end:"2023-07-03", color:"limegreen"},
+      { id: 3, name: "会議", start: "2023-07-07", end:"2023-07-07", color:"deepskyblue"},
+      { id: 6, name: "海外旅行", start: "2023-07-08", end:"2023-07-11", color:"navy"},
+      { id: 4, name: "有給", start: "2023-07-09", end:"2023-07-10", color:"dimgray"},
+      { id: 5, name: "あべべべ", start: "2023-07-09", end:"2023-07-11", color:"dimgray"},
     ]);
 
     const getStartDate = ()=>{
@@ -130,42 +118,23 @@ export default {
       currentDate.value = moment(currentDate.value).add(1, 'month');
     }
 
-    const getDayEvents = (date, youbiNum)=>{
-      let stackIndex = 0;
-      let dayEvents = [];
-      let startedEvents = [];
-
-      // return events.value.filter(event => { //元コード
-      //   let startDate = moment(event.start).format('YYYY-MM-DD')
-      //   let endDate = moment(event.end).format('YYYY-MM-DD')
-      //   let Date = date.format('YYYY-MM-DD')
-      //   if(startDate <= Date && endDate >= Date) return true;
-      // });
-
-      // events.value.filter(event => { //変更点
-      //   let startDate = moment(event.start).format('YYYY-MM-DD')
-      //   let endDate = moment(event.end).format('YYYY-MM-DD')
-      //   let Date = date.format('YYYY-MM-DD')
-      //   if(startDate <= Date && endDate >= Date){
-      //     [stackIndex, dayEvents] = getStackEvents(event, youbiNum, stackIndex, dayEvents, startedEvents, date);
-      //     dayEvents.push({...event})
-      //   };
-      // });
-      // return dayEvents;
-
-
+    const getDayEvents = (date: moment.Moment, youbiNum: number)=>{
+      let stackIndex: number = 0;
+      let dayEvents: Event[] = [];
+      let startedEvents: Event[] = [];
+      
       sortedEvents.value.forEach(event => { //完成らしいコード
         let eventStartDate = moment(event.start).format('YYYY-MM-DD');
         let eventEndDate = moment(event.end).format('YYYY-MM-DD');
         let Date = date.format('YYYY-MM-DD');
         if(eventStartDate <= Date && eventEndDate >= Date){
           if(eventStartDate === Date){
-            [stackIndex, dayEvents] = getStackEvents(event, youbiNum, stackIndex, dayEvents, startedEvents, date);
-            let width = getEventWidth(eventStartDate, eventEndDate, youbiNum);
+            [stackIndex, dayEvents] = getStackEvents(event, stackIndex, dayEvents, startedEvents);
+            let width: number = getEventWidth(moment(event.start), moment(event.end), youbiNum);
             dayEvents.push({...event, width});
           }else if(youbiNum === 0){
-            [stackIndex, dayEvents] = getStackEvents(event, youbiNum, stackIndex, dayEvents, startedEvents, date);
-            let width = getEventWidth(date, eventEndDate, youbiNum);
+            [stackIndex, dayEvents] = getStackEvents(event, stackIndex, dayEvents, startedEvents);
+            let width: number = getEventWidth(date, moment(event.end), youbiNum);
             dayEvents.push({...event, width});
           }else{
             startedEvents.push(event)
@@ -175,24 +144,16 @@ export default {
       return dayEvents;
     }
 
-    const getEventWidth = (start, end, youbiNum)=>{
-      let betweenDays = moment(end).diff(start, "days")
+    const getEventWidth = (start: moment.Moment, end: moment.Moment, youbiNum: number)=>{
+      let betweenDays = moment(end).diff(start, "days");
       if(betweenDays > 6 - youbiNum){
         return (6 - youbiNum) * 100 + 95; 
       }else{
         return betweenDays * 100 + 95;
       }
     }
-    const getEventSize = (start, end, youbiNum)=>{
-      let betweenDays = moment(end).diff(start, "days")
-      if(betweenDays > 6 - youbiNum){
-        return 6 - youbiNum; 
-      }else{
-        return betweenDays;
-      }
-    }
 
-    const getStackEvents = (event, youbiNum, stackIndex, dayEvents, startedEvents, start)=>{
+    const getStackEvents = (event: Event, stackIndex: number, dayEvents: Event[], startedEvents: Event[]): [number, Event[]]=>{
       [stackIndex, dayEvents] = getStartedEvents(stackIndex, startedEvents, dayEvents);
       Object.assign(event,{
         stackIndex
@@ -200,8 +161,8 @@ export default {
       stackIndex++;
       return [stackIndex,dayEvents];
     }
-
-    const getStartedEvents = (stackIndex, startedEvents, dayEvents)=>{
+    
+    const getStartedEvents = (stackIndex: number, startedEvents: Event[], dayEvents: Event[]): [number, Event[]]=>{
       let startedEvent;
       do{
         startedEvent = startedEvents.find(event => event.stackIndex === stackIndex)
@@ -213,16 +174,27 @@ export default {
       return [stackIndex, dayEvents]
     }
 
-    const dragStart = (event, eventId)=>{
+    const dragStart = (event: DragEvent, eventId: number)=>{
+      if (!event.dataTransfer) {
+        return
+      }
+      const stringEventId = eventId.toString();
       event.dataTransfer.effectAllowed = "move";
       event.dataTransfer.dropEffect = "move";
-      event.dataTransfer.setData("eventId", eventId);
+      event.dataTransfer.setData("eventId", stringEventId);
     }
 
-    const dragEnd = (event, date)=>{
-      let eventId = event.dataTransfer.getData("eventId");
-      let dragEvent = events.value.find(event => event.id == eventId);
-      let betweenDays = moment(dragEvent.end).diff(moment(dragEvent.start), "days");
+    const dragEnd = (event: DragEvent, date: string)=>{ 
+      if (!event.dataTransfer) {
+        return
+      }
+      const stringEventId: string = event.dataTransfer.getData("eventId");
+      const parseIntEventId: number = parseInt(stringEventId);
+      const dragEvent = events.value.find(event => event.id === parseIntEventId);
+      if (!dragEvent) {
+        return;
+      }
+      const betweenDays = moment(dragEvent.end).diff(moment(dragEvent.start), "days");
       dragEvent.start = date;
       dragEvent.end = moment(dragEvent.start).add(betweenDays, "days").format("YYYY-MM-DD");
     }
@@ -240,8 +212,8 @@ export default {
       })
     }
 
-    const getCalendar = async (currentDate)=>{
-      await axios.get('/googleCalendar?currentMonth=' + currentDate).then((res)=>{
+    const getCalendar = async (currentMonth: string)=>{
+      await axios.get('/googleCalendar?currentMonth=' + currentMonth).then((res)=>{
         console.log(res);
       });
 		}
@@ -269,22 +241,15 @@ export default {
       return currentDate.value.format('YYYY-MM');
     })
 
-    const rules = reactive({
-      hours: { min: 7, max: 23},
-      minutes: { interval: 5 },
-    });
-
     return {
       today,
       youbiArray,
-      date,
-      rules,
       calendars,
       calendarVisible,
       displayDate,
+      currentMonth,
       prevMonth,
       nextMonth,
-      currentMonth,
       dragStart,
       dragEnd,
       editCalendar,
@@ -318,7 +283,6 @@ export default {
 .calendar-weekly{
   display:flex;
   border-left:1px solid #E0E0E0;
-  /* background-color: black; */
 }
 
 .calendar-youbi{

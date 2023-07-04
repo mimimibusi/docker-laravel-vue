@@ -5,6 +5,7 @@
         "strict": true,
         "jsx": "preserve",
         "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
 
         "typeRoots": ["./resources/js/@types"]
 

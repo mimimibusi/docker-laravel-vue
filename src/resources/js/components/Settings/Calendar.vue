@@ -40,7 +40,6 @@
         </div>
       </div>
     </div>
-    <button @click="updateEvents()">更新</button>
   </div>
 </template>
 
@@ -60,18 +59,10 @@ export default {
     const today = moment().format('YYYY-MM-DD');
 
     const currentDate = ref(moment());
-    const calendarVisible = ref<Boolean>(false);
 
     const youbiArray = ['日', '月', '火', '水', '木', '金', '土'];
 
-    const events = ref<Event[]>([
-      { id: 1, name: "ミーティング", start: "2023-07-01", end:"2023-07-01", color:"blue"},
-      { id: 2, name: "イベント", start: "2023-07-02", end:"2023-07-03", color:"limegreen"},
-      { id: 3, name: "会議", start: "2023-07-07", end:"2023-07-07", color:"deepskyblue"},
-      { id: 6, name: "海外旅行", start: "2023-07-08", end:"2023-07-11", color:"navy"},
-      { id: 4, name: "有給", start: "2023-07-09", end:"2023-07-10", color:"dimgray"},
-      { id: 5, name: "あべべべ", start: "2023-07-09", end:"2023-07-11", color:"dimgray"},
-    ]);
+    const events = ref<Event[]>([]);
 
     const getStartDate = ()=>{
       const date = currentDate.value.clone().startOf('month');
@@ -122,7 +113,9 @@ export default {
       let stackIndex: number = 0;
       let dayEvents: Event[] = [];
       let startedEvents: Event[] = [];
-      
+      if (!sortedEvents.value) {
+        return;
+      }
       sortedEvents.value.forEach(event => { //完成らしいコード
         let eventStartDate = moment(event.start).format('YYYY-MM-DD');
         let eventEndDate = moment(event.end).format('YYYY-MM-DD');
@@ -174,23 +167,21 @@ export default {
       return [stackIndex, dayEvents]
     }
 
-    const dragStart = (event: DragEvent, eventId: number)=>{
+    const dragStart = (event: DragEvent, eventId: string)=>{
       if (!event.dataTransfer) {
         return
       }
-      const stringEventId = eventId.toString();
       event.dataTransfer.effectAllowed = "move";
       event.dataTransfer.dropEffect = "move";
-      event.dataTransfer.setData("eventId", stringEventId);
+      event.dataTransfer.setData("eventId", eventId);
     }
 
     const dragEnd = (event: DragEvent, date: string)=>{ 
       if (!event.dataTransfer) {
         return
       }
-      const stringEventId: string = event.dataTransfer.getData("eventId");
-      const parseIntEventId: number = parseInt(stringEventId);
-      const dragEvent = events.value.find(event => event.id === parseIntEventId);
+      const eventId: string = event.dataTransfer.getData("eventId");
+      const dragEvent = events.value.find(event => event.id === eventId);
       if (!dragEvent) {
         return;
       }
@@ -199,22 +190,9 @@ export default {
       dragEvent.end = moment(dragEvent.start).add(betweenDays, "days").format("YYYY-MM-DD");
     }
 
-    const editCalendar = ()=>{
-      calendarVisible.value = !calendarVisible.value;
-    }
-
-    const updateEvents = async ()=>{
-      await axios.post('/updateSchedule', {events: events.value}).then(()=>{
-        alert('更新完了しました。');
-        calendarVisible.value = false;
-      }).catch(()=>{
-        alert('更新失敗しました');
-      })
-    }
-
     const getCalendar = async (currentMonth: string)=>{
       await axios.get('/googleCalendar?currentMonth=' + currentMonth).then((res)=>{
-        console.log(res);
+        events.value = res.data;
       });
 		}
 
@@ -223,6 +201,9 @@ export default {
     })
 
     const sortedEvents = computed(()=>{
+      if (!events.value) {
+        return;
+      }
       return events.value.slice().sort(function(a,b) {
         let startDate = moment(a.start).format('YYYY-MM-DD')
         let startDate_2 = moment(b.start).format('YYYY-MM-DD')
@@ -245,15 +226,12 @@ export default {
       today,
       youbiArray,
       calendars,
-      calendarVisible,
       displayDate,
       currentMonth,
       prevMonth,
       nextMonth,
       dragStart,
-      dragEnd,
-      editCalendar,
-      updateEvents,
+      dragEnd
     }
   }
 };

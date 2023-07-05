@@ -1,11 +1,11 @@
 <template>
   <div
     class="calendar-event"
-    :style="`width:${event.width}%; background-color:${event.color};`"
+    :style="`width:${event.width}%; background-color:blue;`"
     draggable="true"
     @dragstart="$emit('dragStart', $event, eventId)"
   >
-  {{ event.name }}
+  {{ event.summary }}
   </div>
 </template>
 
@@ -23,7 +23,7 @@ export default({
       type: Object as ()=> Event,
       required: true
     },
-    eventId: Number
+    eventId: String
   },
   name: 'CalendarEvent',
   emits: ['dragStart'],

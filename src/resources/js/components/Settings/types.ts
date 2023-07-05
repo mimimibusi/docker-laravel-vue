@@ -1,9 +1,8 @@
 export interface Event{
-  id: number,
-  name: string,
+  id: string,
+  summary: string,
   start: string,
   end: string,
-  color: string,
   width?: number,
   stackIndex?: number,
 }

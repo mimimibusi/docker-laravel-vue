@@ -6,9 +6,8 @@
         "jsx": "preserve",
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
-
-        "typeRoots": ["./resources/js/@types"]
-
+        "typeRoots": ["resources/js/@types/shim-vue.d.ts"]
     },
-    "include": ["./resources/js/**/*"]
+    "include": ["resources/js/**/*.ts", "resources/js/**/*.vue"],
+    "exclude": ["node_modules", "public"]
 }

@@ -1,13 +1,14 @@
 <template>
-	<div>{{ title }}</div>
-	<Calendar />
-	<a href="login/google-oauth">Google認証aタグ</a>
-	<br>
+	<div>
+		<div>{{ title }}</div>
+		<Calendar />
+		<a href="login/google-oauth">Google認証aタグ</a>
+	</div>
 	<!-- <a href="login/google-oauth" v-if="accessTokenFlag">Google認証aタグ</a> -->
 </template>
 
 <script>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import Calendar from './Calendar.vue';
 

@@ -1,5 +1,5 @@
 <template>
-  <div id="overlay-modal" @click.self="$emit('deleteModal')">
+  <div id="overlay-modal" @click.stop="$emit('deleteModal')">
     <div class="base-modal">
       <div class="edit-content">
         <span id="edit"  class="btn btn-primary btn-link" @click.stop="editEvent()">編集</span>
@@ -8,7 +8,7 @@
       </div>
       <div class="event-content">
         <h2>
-          {{ event.name }}
+          {{ event.summary }}
         </h2>
         <span>
           {{ event.start }} 〜 {{ event.end }}
@@ -18,12 +18,15 @@
   </div>
 </template>
 
-<script>
-import { watch, ref, reactive, onMounted, computed } from 'vue';
+<script lang="ts">
+import { Event } from './types';
 
 export default({
   props:{
-    event: Object,
+    event: {
+      type: Object as ()=> Event,
+      required: true
+    },
     modalFlag: Boolean
   },
   name: 'EventModal',
@@ -31,9 +34,11 @@ export default({
     const editEvent = ()=>{
       console.log('editEvent');
     }
+
     const deleteEvent = ()=>{
       console.log('deleteEvent');
     }
+
     return{
       editEvent,
       deleteEvent

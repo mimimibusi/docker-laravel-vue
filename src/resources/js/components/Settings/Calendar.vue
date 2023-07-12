@@ -19,6 +19,7 @@
           :key="index"
           @drop="dragEnd($event, day.date)"
           @dragover.prevent
+          @click="createEvent(day.date)"
         >
           <div class="calendar-day">
             <p :class="{today: day.date === today}">
@@ -40,6 +41,8 @@
         </div>
       </div>
     </div>
+    <button @click="createEvents()">作成</button>
+    <button @click="updateEvents()">更新</button>
   </div>
 </template>
 
@@ -63,6 +66,7 @@ export default {
     const youbiArray = ['日', '月', '火', '水', '木', '金', '土'];
 
     const events = ref<Event[]>([]);
+    const eventsTime = ref<Event[]>([]);
 
     const getStartDate = ()=>{
       const date = currentDate.value.clone().startOf('month');
@@ -190,11 +194,40 @@ export default {
       dragEvent.end = moment(dragEvent.start).add(betweenDays, "days").format("YYYY-MM-DD");
     }
 
+    const createEvent = async (date: string)=>{
+      events.value.push({start: date, end:date});
+      await axios.post('/createSchedule', {start: date, end: date}).then(()=>{
+        alert('作成完了しました。');
+      }).catch(()=>{
+        alert('作成失敗しました');
+      })
+    }
+
+    const updateEvents = async ()=>{
+      const test = {
+        id: '6mjnaj6susig1fcqdcbmsnbhem',
+        summary: 'test1だったもの',
+        start: '2023-07-20',
+        startTime: 'T04:00:00+09:00',
+        end: '2023-07-20',
+        endTime: 'T10:00:00+09:00'
+      }
+      await axios.post('/updateSchedule', test).then(()=>{
+        alert('更新完了しました。');
+      }).catch(()=>{
+        alert('更新失敗しました');
+      })
+    }
+
     const getCalendar = async (currentMonth: string)=>{
       await axios.get('/googleCalendar?currentMonth=' + currentMonth).then((res)=>{
-        events.value = res.data;
+        if(res.data){
+          events.value = res.data;
+          eventsTime.value = res.data;
+        }
+        console.log(events.value);
       });
-		}
+    }
 
     const calendars = computed(()=>{
       return createCalendar();
@@ -231,7 +264,9 @@ export default {
       prevMonth,
       nextMonth,
       dragStart,
-      dragEnd
+      dragEnd,
+      createEvent,
+      updateEvents,
     }
   }
 };

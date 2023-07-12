@@ -4,15 +4,23 @@
     :style="`width:${event.width}%; background-color:blue;`"
     draggable="true"
     @dragstart="$emit('dragStart', $event, eventId)"
+    @click.stop="viewModal()"
   >
   {{ event.summary }}
+  </div>
+  <div v-show="modalFlag">
+    <EventModal
+      :event="event"
+      :modalFlag="modalFlag"
+      @deleteModal="deleteModal"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { ref } from 'vue';
 import EventModal from './EventModal.vue';
-import { Event } from './types'
+import { Event } from './types';
 
 export default({
   components:{
@@ -27,5 +35,22 @@ export default({
   },
   name: 'CalendarEvent',
   emits: ['dragStart'],
+  setup(){
+    const modalFlag = ref<boolean>(false);
+
+    const viewModal = ()=>{
+      modalFlag.value = true;
+    }
+
+    const deleteModal = ()=>{
+      modalFlag.value = false;
+    }
+
+    return {
+      modalFlag,
+      viewModal,
+      deleteModal
+    }
+  }
 })
 </script>

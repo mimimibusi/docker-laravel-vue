@@ -3,7 +3,7 @@
     <div class="base-modal">
       <div class="edit-content">
         <span id="edit"  class="btn btn-primary btn-link" @click.stop="editEvent()">編集</span>
-        <span id="delete" class="btn btn-primary btn-link" @click.stop="deleteEvent()">削除</span>
+        <span id="delete" class="btn btn-primary btn-link" @click.stop="deleteEvent(event)">削除</span>
         <span id="close" class="btn btn-primary btn-link" @click.stop="$emit('deleteModal')">閉じる</span>
       </div>
       <div class="event-content">
@@ -19,7 +19,9 @@
 </template>
 
 <script lang="ts">
-import { Event } from './types';
+import { Event, strictInject } from './types';
+import axios from 'axios';
+import { key } from './provider';
 
 export default({
   props:{
@@ -31,12 +33,24 @@ export default({
   },
   name: 'EventModal',
   setup(){
+    const {
+      events
+    } = strictInject(key);
+    
     const editEvent = ()=>{
       console.log('editEvent');
     }
 
-    const deleteEvent = ()=>{
-      console.log('deleteEvent');
+    const deleteEvent = (event: Event)=>{
+      const params = {id: event.id, calendarId: event.calendarId};
+      axios.delete('/deleteEvent', {params: params}).then(()=>{
+        events.value = events.value.filter(function(event2: Event){
+          return event2.id !== event.id;
+        });
+        alert(event.id + 'idのイベントを削除しました');
+      }).catch(()=>{
+        alert('削除できませんでした');
+      });
     }
 
     return{

@@ -113,4 +113,12 @@ class GoogleCalendarController extends Controller
         ];
         return $result;
     }
+
+    public function deleteEvent(Request $params)
+    {
+        \Log::info($params);
+        $service = new Google_Service_Calendar($this->googleClient);
+        $this->googleClient->setAccessToken(Auth::user()->access_token);
+        $service->events->delete($params->calendarId, $params->id);
+    }
 }

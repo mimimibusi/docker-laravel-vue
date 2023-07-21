@@ -47,11 +47,12 @@
 </template>
 
 <script lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, provide } from 'vue';
 import CalendarEvent from './CalendarEvent.vue';
 import axios from 'axios';
 import moment from 'moment';
 import { Event } from './types';
+import { key, useProvide } from './provider'
 
 export default {
   components: {
@@ -59,13 +60,18 @@ export default {
   },
   name: 'Calendar',
   setup(){
+    const provider = useProvide();
+    const {
+      events
+    } = provider;
+    provide(key, provider);
+
     const today = moment().format('YYYY-MM-DD');
 
     const currentDate = ref(moment());
 
     const youbiArray = ['日', '月', '火', '水', '木', '金', '土'];
 
-    const events = ref<Event[]>([]);
     const eventsTime = ref<Event[]>([]);
 
     const getStartDate = ()=>{

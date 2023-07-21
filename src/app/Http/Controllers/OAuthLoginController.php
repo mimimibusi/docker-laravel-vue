@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Model\User;
 use Google_Client;
-use Google\Service\Calendar as Calendar;
+use Google\Service\Calendar;
+use Google_Service_Calendar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -22,6 +23,13 @@ class OAuthLoginController extends Controller
 
     public function getGoogleAuth()
     {
+        $scopes = [
+            Google_Service_Calendar::CALENDAR,
+            Google_Service_Calendar::CALENDAR_EVENTS,
+            Google_Service_Calendar::CALENDAR_EVENTS_READONLY,
+            Google_Service_Calendar::CALENDAR_READONLY,
+            Google_Service_Calendar::CALENDAR_SETTINGS_READONLY,
+        ];
         // $client = new Google_Client();
         // $this->client->setAccessType('offline');  //オフライン時にアクセストークンを更新
         // $this->client->setApprovalPrompt("force"); //承認プロンプトの動作（force: 承認UIを強制的に表示する）       
@@ -32,7 +40,7 @@ class OAuthLoginController extends Controller
         // \Log::info($auth_url);
         // return Redirect::to($auth_url)->send();
         
-        return Socialite::driver('google')->scopes([Calendar::CALENDAR_EVENTS])->redirect();
+        return Socialite::driver('google')->scopes($scopes)->redirect();
     }
 
     public function authGoogleCallBack(Request $request)

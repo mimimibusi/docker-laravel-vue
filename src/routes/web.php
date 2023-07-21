@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function(){
 
     Route::get('/googleCalendar', 'GoogleCalendarController@getEvent');
     Route::post('/createEvent', 'GoogleCalendarController@createEvent');
+    Route::delete('/deleteEvent', 'GoogleCalendarController@deleteEvent');
     
     Route::get('/hello', function(){
         return view('index');

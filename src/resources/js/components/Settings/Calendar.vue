@@ -195,8 +195,8 @@ export default {
     }
 
     const createEvent = async (date: string)=>{
-      events.value.push({start: date, end:date});
-      await axios.post('/createSchedule', {start: date, end: date}).then(()=>{
+      await axios.post('/createEvent', {start: date, end: date}).then((res)=>{
+        events.value.push(res.data);
         alert('作成完了しました。');
       }).catch(()=>{
         alert('作成失敗しました');

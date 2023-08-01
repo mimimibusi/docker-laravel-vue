@@ -1,5 +1,3 @@
-import { InjectionKey, inject } from "vue";
-
 export interface Event{
   id?: string,
   summary?: string,
@@ -10,6 +8,3 @@ export interface Event{
   stackIndex?: number,
 }
 export type ReturnType<T> = T extends (...args: any) => infer R ? R : any;
-export const strictInject = <T>(key: InjectionKey<T>) => {
-  return inject(key) as T;
-};

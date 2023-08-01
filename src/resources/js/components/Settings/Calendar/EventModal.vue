@@ -2,7 +2,7 @@
   <div id="overlay-modal" @click.stop="$emit('deleteModal')">
     <div class="base-modal">
       <div class="edit-content">
-        <span id="edit"  class="btn btn-primary btn-link" @click.stop="editEvent()">編集</span>
+        <router-link :to="{name: 'eventEdit', params: {id: event.id, calendarId: event.calendarId}}">編集</router-link>
         <span id="delete" class="btn btn-primary btn-link" @click.stop="deleteEvent(event)">削除</span>
         <span id="close" class="btn btn-primary btn-link" @click.stop="$emit('deleteModal')">閉じる</span>
       </div>
@@ -19,9 +19,9 @@
 </template>
 
 <script lang="ts">
-import { Event, strictInject } from './types';
+import { Event } from './types';
 import axios from 'axios';
-import { key } from './provider';
+import { key, strictInject } from './provider';
 
 export default({
   props:{
@@ -36,10 +36,6 @@ export default({
     const {
       events
     } = strictInject(key);
-    
-    const editEvent = ()=>{
-      console.log('editEvent');
-    }
 
     const deleteEvent = (event: Event)=>{
       const params = {id: event.id, calendarId: event.calendarId};
@@ -54,7 +50,6 @@ export default({
     }
 
     return{
-      editEvent,
       deleteEvent
     }
   }

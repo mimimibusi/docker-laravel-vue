@@ -24,9 +24,10 @@ Route::middleware('auth')->group(function(){
     Route::get('/login/google-oauth/callback', 'OAuthLoginController@authGoogleCallback');
     Route::get('/judgeHaveAccessToken', 'OAuthLoginController@judgeHaveAccessToken');
 
-    Route::get('/googleCalendar', 'GoogleCalendarController@getEvent');
+    Route::get('/googleCalendar', 'GoogleCalendarController@getEvents');
     Route::post('/createEvent', 'GoogleCalendarController@createEvent');
     Route::delete('/deleteEvent', 'GoogleCalendarController@deleteEvent');
+    Route::get('/getEditEvent', 'GoogleCalendarController@getEditEvent');
     
     Route::get('/hello', function(){
         return view('index');

@@ -44,6 +44,7 @@
     <button @click="createEvents()">作成</button>
     <button @click="updateEvents()">更新</button>
   </div>
+  <a href="login/google-oauth">Google認証aタグ</a>
 </template>
 
 <script lang="ts">
@@ -61,9 +62,7 @@ export default {
   name: 'Calendar',
   setup(){
     const provider = useProvide();
-    const {
-      events
-    } = provider;
+    const { events } = provider;
     provide(key, provider);
 
     const today = moment().format('YYYY-MM-DD');
@@ -213,12 +212,13 @@ export default {
       const test = {
         id: '6mjnaj6susig1fcqdcbmsnbhem',
         summary: 'test1だったもの',
-        start: '2023-07-20',
-        startTime: 'T04:00:00+09:00',
-        end: '2023-07-20',
-        endTime: 'T10:00:00+09:00'
+        start: '2023-07-05',
+        startTime: 'T15:00:00',
+        end: '2023-07-05',
+        endTime: 'T20:00:00',
+        calendarId: 'kasuterax0@gmail.com'
       }
-      await axios.post('/updateSchedule', test).then(()=>{
+      await axios.post('/updateEvent', test).then(()=>{
         alert('更新完了しました。');
       }).catch(()=>{
         alert('更新失敗しました');

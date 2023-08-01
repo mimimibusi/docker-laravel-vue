@@ -26,15 +26,8 @@ class GoogleCalendarController extends Controller
         // $this->googleCalendarServiceProvider = $googleCalendarServiceProvider;
     }
 
-    public function getEvent(Request $request)
+    public function getEvents(Request $request)
     {
-        $scopes = [
-            Google_Service_Calendar::CALENDAR,
-            Google_Service_Calendar::CALENDAR_EVENTS,
-            Google_Service_Calendar::CALENDAR_EVENTS_READONLY,
-            Google_Service_Calendar::CALENDAR_READONLY,
-            Google_Service_Calendar::CALENDAR_SETTINGS_READONLY,
-        ];
         // $this->googleClient->setAuthConfig(storage_path('client_secret_35578369161-c1tfvcftqi12s64unt95io9s3m5pp5bg.apps.googleusercontent.com (1).json'));
         $this->googleClient->setAccessToken(Auth::user()->access_token);
         $service = new Google_Service_Calendar($this->googleClient);
@@ -86,6 +79,59 @@ class GoogleCalendarController extends Controller
             $errorMesasge = $e->getMessage();
             \Log::info($errorMesasge);
         }
+    }
+
+    public function getEditEvent(Request $request)
+    {
+        \Log::info($request);
+        $this->googleClient->setAccessToken(Auth::user()->access_token);
+        $service = new Google_Service_Calendar($this->googleClient);
+        $event = $service->events->get($request->calendarId, $request->id);
+        if ($event->start->dateTime and $event->end->dateTime) {
+            $result = [
+                'id' => $event->id,
+                'summary' => $event->getSummary(),
+                'start' => $event->start->dateTime,
+                'end' => $event->end->dateTime,
+                'colorId' => $event->colorId,
+                'calendarId' => $event->getOrganizer()->getEmail(),
+            ];
+        }else {
+            $result = [
+                'id' => $event->id,
+                'summary' => $event->getSummary(),
+                'start' => $event->start->date,
+                'end' => $event->end->date,
+                'colorId' => $event->colorId,
+                'calendarId' => $event->getOrganizer()->getEmail(),
+            ];
+        }
+        \Log::info($result);
+        return $result;
+    }
+
+    public function updateEvent(Request $request)
+    {
+        $startTime = Carbon::parse($request->start . $request->startTime)->format(DATE_RFC3339);
+        $endTime = Carbon::parse($request->end . $request->endTime)->format(DATE_RFC3339);
+        $this->googleClient->setAccessToken(Auth::user()->access_token);
+        $service = new Google_Service_Calendar($this->googleClient);
+        $event = $service->events->get($request->calendarId, $request->id);
+        $event->setSummary($request->summary);
+
+        $start = new Google_Service_Calendar_EventDateTime();
+        $start->setTimeZone('Asia/Tokyo');
+        $start->setDateTime($startTime);
+        $event->setStart($start);
+
+        $end = new Google_Service_Calendar_EventDateTime();
+        $end->setTimeZone('Asia/Tokyo');
+        $end->setDateTime($endTime);
+        $event->setEnd($end);
+
+        $newEvent = $service->events->update($request->calendarId, $event->getId(), $event);
+        \Log::info(print_r($newEvent, true));
+        return;
     }
 
     public function createEvent(Request $request)

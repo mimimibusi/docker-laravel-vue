@@ -1,21 +1,16 @@
 <template>
 	<div>
-		<div>{{ title }}</div>
-		<Calendar />
-		<a href="login/google-oauth">Google認証aタグ</a>
+    <div>{{ title }}</div>
+		<router-link to="/setting/calendar">予定</router-link>
+    <a href="login/google-oauth">Google認証aタグ</a>
 	</div>
-	<!-- <a href="login/google-oauth" v-if="accessTokenFlag">Google認証aタグ</a> -->
 </template>
 
 <script>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import Calendar from './Calendar.vue';
 
 export default{
-	components: {
-		Calendar
-	},
 	name: 'Setting',
 	setup(){
 		const title = ref('せっていだよー＾＾');

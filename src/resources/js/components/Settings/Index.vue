@@ -2,6 +2,7 @@
 	<div>
     <div>{{ title }}</div>
 		<router-link to="/setting/calendar">予定</router-link>
+    <br>
     <a href="login/google-oauth">Google認証aタグ</a>
 	</div>
 </template>

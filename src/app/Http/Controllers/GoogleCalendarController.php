@@ -44,25 +44,7 @@ class GoogleCalendarController extends Controller
             $result = [];
             while(true) {
                 foreach ($events->getItems() as $event) {
-                    if ($event->start->dateTime and $event->end->dateTime) {
-                        $result[] = [
-                            'id' => $event->id,
-                            'summary' => $event->getSummary(),
-                            'start' => $event->start->dateTime,
-                            'end' => $event->end->dateTime,
-                            'colorId' => $event->colorId,
-                            'calendarId' => $event->getOrganizer()->getEmail(),
-                        ];
-                    }else {
-                        $result[] = [
-                            'id' => $event->id,
-                            'summary' => $event->getSummary(),
-                            'start' => $event->start->date,
-                            'end' => $event->end->date,
-                            'colorId' => $event->colorId,
-                            'calendarId' => $event->getOrganizer()->getEmail(),
-                        ];
-                    }
+                    array_push($result, $this->formatCalendar($event));
                 }
                 $pageToken = $events->getNextPageToken();
                 \Log::info($pageToken);
@@ -87,26 +69,7 @@ class GoogleCalendarController extends Controller
         $this->googleClient->setAccessToken(Auth::user()->access_token);
         $service = new Google_Service_Calendar($this->googleClient);
         $event = $service->events->get($request->calendarId, $request->id);
-        if ($event->start->dateTime and $event->end->dateTime) {
-            $result = [
-                'id' => $event->id,
-                'summary' => $event->getSummary(),
-                'start' => $event->start->dateTime,
-                'end' => $event->end->dateTime,
-                'colorId' => $event->colorId,
-                'calendarId' => $event->getOrganizer()->getEmail(),
-            ];
-        }else {
-            $result = [
-                'id' => $event->id,
-                'summary' => $event->getSummary(),
-                'start' => $event->start->date,
-                'end' => $event->end->date,
-                'colorId' => $event->colorId,
-                'calendarId' => $event->getOrganizer()->getEmail(),
-            ];
-        }
-        \Log::info($result);
+        $result = $this->formatCalendar($event);
         return $result;
     }
 
@@ -130,13 +93,12 @@ class GoogleCalendarController extends Controller
         $event->setEnd($end);
 
         $newEvent = $service->events->update($request->calendarId, $event->getId(), $event);
-        \Log::info(print_r($newEvent, true));
-        return;
+        $result = $this->formatCalendar($newEvent);
+        return $result;
     }
 
     public function createEvent(Request $request)
     {
-        \Log::info($request);
         $event = new Google_Service_Calendar_Event([
             'summary' => $request->summary,
             'start' => [
@@ -149,22 +111,38 @@ class GoogleCalendarController extends Controller
         $service = new Google_Service_Calendar($this->googleClient);
         $this->googleClient->setAccessToken(Auth::user()->access_token);
         $newEvent = $service->events->insert('primary', $event);
-        $result = [
-            'id' => $newEvent->id,
-            'summary' => $newEvent->getSummary(),
-            'start' => $newEvent->start->dateTime,
-            'end' => $newEvent->end->dateTime,
-            'colorId' => $newEvent->colorId,
-            'calendarId' => $newEvent->getOrganizer()->getEmail(),
-        ];
+        $result = $this->formatCalendar($newEvent);
         return $result;
     }
 
     public function deleteEvent(Request $params)
     {
-        \Log::info($params);
         $service = new Google_Service_Calendar($this->googleClient);
         $this->googleClient->setAccessToken(Auth::user()->access_token);
         $service->events->delete($params->calendarId, $params->id);
+    }
+
+    public function formatCalendar($event)
+    {
+        if ($event->start->dateTime and $event->end->dateTime) {
+            $result = [
+                'id' => $event->id,
+                'summary' => $event->getSummary(),
+                'start' => $event->start->dateTime,
+                'end' => $event->end->dateTime,
+                'colorId' => $event->colorId,
+                'calendarId' => $event->getOrganizer()->getEmail(),
+            ];
+        }else {
+            $result = [
+                'id' => $event->id,
+                'summary' => $event->getSummary(),
+                'start' => $event->start->date,
+                'end' => $event->end->date,
+                'colorId' => $event->colorId,
+                'calendarId' => $event->getOrganizer()->getEmail(),
+            ];
+        }
+        return $result;
     }
 }

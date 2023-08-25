@@ -2,7 +2,7 @@
   <div id="overlay-modal" @click.stop="$emit('deleteModal')">
     <div class="base-modal">
       <div class="edit-content">
-        <router-link :to="{name: 'eventEdit', params: {id: event.id, calendarId: event.calendarId}}">編集</router-link>
+        <router-link id="edit" :to="{name: 'eventEdit', params: {id: event.id, calendarId: event.calendarId}}">編集</router-link>
         <span id="delete" class="btn btn-primary btn-link" @click.stop="deleteEvent(event)">削除</span>
         <span id="close" class="btn btn-primary btn-link" @click.stop="$emit('deleteModal')">閉じる</span>
       </div>
@@ -43,7 +43,7 @@ export default({
         events.value = events.value.filter(function(event2: Event){
           return event2.id !== event.id;
         });
-        alert(event.id + 'idのイベントを削除しました');
+        alert(event.summary + 'イベントを削除しました');
       }).catch(()=>{
         alert('削除できませんでした');
       });
@@ -92,5 +92,10 @@ export default({
   /* justify-content: space-between; */
   justify-content: flex-end;
   gap: 12px;
+}
+
+.edit-content #edit{
+  text-decoration: none;
+  color: black;
 }
 </style>

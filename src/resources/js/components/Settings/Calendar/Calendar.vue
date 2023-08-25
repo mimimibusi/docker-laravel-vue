@@ -202,9 +202,7 @@ export default {
     const createEvent = async (date: string)=>{
       await axios.post('/createEvent', {start: date, end: date}).then((res)=>{
         events.value.push(res.data);
-        alert('作成完了しました。');
       }).catch(()=>{
-        alert('作成失敗しました');
       })
     }
 

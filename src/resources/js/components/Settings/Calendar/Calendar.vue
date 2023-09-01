@@ -55,7 +55,7 @@ import moment from 'moment';
 import { Event } from './types';
 import { key, useProvide } from './provider'
 
-export default {
+export default ({
   components: {
     CalendarEvent,
   },
@@ -273,7 +273,7 @@ export default {
       updateEvents,
     }
   }
-};
+});
 </script>
 
 <style>

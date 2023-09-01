@@ -1,21 +1,21 @@
 <template>
 	<div>
-    <div>{{ title }}</div>
+    <h1>{{ title }}</h1>
 		<router-link to="/setting/calendar">予定</router-link>
     <br>
     <a href="login/google-oauth">Google認証aタグ</a>
 	</div>
 </template>
 
-<script>
+<script lang="ts">
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
-export default{
+export default({
 	name: 'Setting',
 	setup(){
-		const title = ref('せっていだよー＾＾');
-		const accessTokenFlag = ref(true); //vuexにユーザー情報持たせてそれで判定しても良いかも
+		const title = '設定';
+		const accessTokenFlag = ref<boolean>(true); //vuexにユーザー情報持たせてそれで判定しても良いかも
 
 		// const judgeHaveAccessToken = async ()=>{
 		// 	await axios.get('/judgeHaveAccessToken').then((res)=>{
@@ -35,5 +35,5 @@ export default{
 			accessTokenFlag
 		}
 	}
-}
+})
 </script>

@@ -22,8 +22,13 @@ class UsersController extends Controller
         return Auth::user();
     }
 
-    public function getFriends(Request $request)
+    public function getFriends()
     {
-        return $this->user->getFriends($request->id);
+        $id = Auth::id();
+        $friends = $this->user->getFriends($id);
+        $result = $friends->each(function($friend){
+            return ['name' => $friend->name];
+        });
+        return $result;
     }
 }

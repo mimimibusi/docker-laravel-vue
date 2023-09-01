@@ -35,6 +35,10 @@ Route::middleware('auth')->group(function(){
     });
     
     Route::get('/index', 'UsersController@getData');
+
+    Route::get('/getFriends', 'UsersController@getFriends');
+    
+    Route::get('/getChattedRoomLists', 'UserChatRoomsController@getChattedRoomLists');
 });
 
 Auth::routes();

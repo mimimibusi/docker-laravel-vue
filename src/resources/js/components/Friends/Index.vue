@@ -1,10 +1,12 @@
 <template>
-	<div>{{ title }}</div>
+	<h1>{{ title }}</h1>
 	<div
+		v-if="friendLists.length !== 0"
 		v-for="friendList in friendLists"
 	>
-		<Card :friendList="friendList" />
+		<Card :friendData="friendList" />
 	</div>
+	<div v-else>友達いないおー；；</div>
 </template>
 
 <script>
@@ -12,19 +14,18 @@ import { ref, reactive, onMounted } from 'vue';
 import axios from 'axios'
 import Card from './Card.vue';
 
-export default{
+export default({
 	components:{
 		Card,
 	},
 	name: 'Friend',
 	setup(){
-		const title = ref('友達一覧');
+		const title = '友達一覧';
 		const friendLists = ref([]);
 		const getFriends = async ()=>{
-			await axios.get('/api/getFriends', {params: {id: 1}}).then((res)=>{
-				res.data.forEach((friendData)=>{
-					friendLists.value.push(friendData);
-				})
+			await axios.get('/getFriends').then((res)=>{
+				console.log(res.data);
+				friendLists.value = res.data;
 			});
 			console.log(friendLists.value);
 		}
@@ -33,5 +34,5 @@ export default{
 		})
 		return {title, friendLists}
 	}
-}
+})
 </script>

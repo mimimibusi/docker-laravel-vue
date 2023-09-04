@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Model\User;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -26,8 +26,11 @@ class UsersController extends Controller
     {
         $id = Auth::id();
         $friends = $this->user->getFriends($id);
-        $result = $friends->each(function($friend){
-            return ['name' => $friend->name];
+        $result = $friends->map(function($friend){
+            return [
+                'id' => $friend->id,
+                'name' => $friend->name
+            ];
         });
         return $result;
     }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\User;
+use App\Models\User;
 use Carbon\Carbon;
 use Google_Client;
 use Google_Service;

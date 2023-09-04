@@ -1,18 +1,49 @@
 <template>
-	<div class="friend-chat-card">
-		<p>{{ friendList.name }}</p>
+	<div class="friend-chat-card" @click="viewModal()">
+		<p>{{ friendData.name }}</p>
 	</div>
+	<div v-show="modalFlag">
+    <FriendModal
+      :friendData="friendData"
+      :modalFlag="modalFlag"
+      @deleteModal="deleteModal"
+    />
+  </div>
 </template>
 
-<script>
-import { ref, reactive } from 'vue';
-export default{
+<script lang="ts">
+import { ref } from 'vue';
+import FriendModal from './FriendModal.vue';
+import { User } from './types';
+
+export default({
 	props:{
-		friendList: Object,
+		friendData: {
+			type: Object as ()=> User,
+			required: true
+		},
 	},
-	setup(props){
+	components:{
+		FriendModal
 	},
-}
+	setup(){
+		const modalFlag = ref<boolean>(false);
+
+		const viewModal = ()=>{
+			modalFlag.value = true;
+		}
+
+		const deleteModal = ()=>{
+      modalFlag.value = false;
+    }
+		
+		return {
+			modalFlag,
+			viewModal,
+			deleteModal
+		}
+	},
+})
 </script>
 
 <style lang="scss">

@@ -39,6 +39,9 @@ Route::middleware('auth')->group(function(){
     Route::get('/getFriends', 'UsersController@getFriends');
     
     Route::get('/getChattedRoomLists', 'UserChatRoomsController@getChattedRoomLists');
+    Route::post('/createChatRoom', 'ChatRoomsController@createChatRoom');
+    //ーーーーーー未開発ーーーーーー
+    // Route::post('/joinChatRoom', 'ChatRoomsController@joinChatRoom');
 });
 
 Auth::routes();

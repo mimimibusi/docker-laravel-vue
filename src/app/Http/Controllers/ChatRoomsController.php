@@ -15,6 +15,17 @@ class ChatRoomsController extends Controller
         $this->chatRoom = $chatRoom;
     }
 
+    public function getChattedRoomLists(){
+        $chatRoomLists = $this->chatRoom->getChattedRoom();
+        $result = $chatRoomLists->map(function($chatRoomList){
+            return [
+                'id' => $chatRoomList->id,
+                'roomName' => $chatRoomList->room_name,
+            ];
+        });
+        return $result;
+    }
+
     public function createChatRoom(Request $request)
     {
         $userId = Auth::id();

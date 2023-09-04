@@ -15,7 +15,7 @@
 <script lang="ts">
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
-import { User } from './types';
+import { ChatRoom } from './types';
 import Card from './Card.vue';
 
 export default({
@@ -24,7 +24,7 @@ export default({
   },
   setup(){
     const title = 'チャット';
-    const chattedRoomLists = ref<User[]>([]);
+    const chattedRoomLists = ref<ChatRoom[]>([]);
 
     const getChattedRoomLists = async () => {
       axios.get('/getChattedRoomLists').then((res)=>{

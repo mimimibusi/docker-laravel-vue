@@ -1,5 +1,5 @@
 <template>
-	<div class="friend-chat-card" @click="viewModal()">
+	<div class="card" @click="viewModal()">
 		<p>{{ friendData.name }}</p>
 	</div>
 	<div v-show="modalFlag">
@@ -51,7 +51,7 @@ p{
 	margin-top: 0;
 	margin-bottom: 0;
 }
-.friend-chat-card{
+.card{
 	/* border-top: 1px solid #d4d6da; */
 	border-bottom: 1px solid #d4d6da;
 	height: 100px;

@@ -1,5 +1,5 @@
 <template>
-	<div class="friend-chat-card">
+	<div class="card">
 		<p>{{ chattedRoom.roomName }}</p>
 	</div>
 </template>
@@ -13,7 +13,7 @@ export default({
     chattedRoom: {
       type: Object as ()=> ChatRoom,
       required: true
-    }
-  }
+    },
+  },
 });
 </script>

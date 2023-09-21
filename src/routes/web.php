@@ -39,7 +39,10 @@ Route::middleware('auth')->group(function(){
     Route::get('/getFriends', 'UsersController@getFriends');
     
     Route::get('/getChattedRoomLists', 'ChatRoomsController@getChattedRoomLists');
+    Route::get('/getChatDate', 'ChatRoomsController@getChatDate');
     Route::post('/createChatRoom', 'ChatRoomsController@createChatRoom');
+    
+    Route::post('/sendMessage', 'ChatsController@sendMessage');
     //ーーーーーー未開発ーーーーーー
     // Route::post('/joinChatRoom', 'ChatRoomsController@joinChatRoom');
 });

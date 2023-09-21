@@ -32,4 +32,10 @@ class ChatRoom extends Model
 		$chatRoomLists = $user->chatRooms;
 		return $chatRoomLists;
 	}
+
+	public function getChatRoomByRoomName($roomName)
+	{
+		$chatRoom = self::where('room_name', '=', $roomName)->first();
+		return $chatRoom;
+	}
 }

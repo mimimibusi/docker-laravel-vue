@@ -38,6 +38,19 @@ class ChatRoomsController extends Controller
         return $chatRoom->id;
     }
 
+    public function getChatDate(Request $request)
+    {
+        $chatData = $this->chatRoom->getChatRoomByRoomName($request->currentRoomName);
+        $result = $chatData->chats->map(function($data){
+            return [
+                'userId' => $data->user_id,
+                'message' => $data->chat,
+                'date' => Carbon::parse($data->created_at)->format('Y-m-d H:i:s', DATE_RFC3339),
+            ];
+        });
+        return $result;
+    }
+
     //ーーーーーーーー未開発機能ーーーーーーーーー
 
     // public function joinChatRoom(Request $request)

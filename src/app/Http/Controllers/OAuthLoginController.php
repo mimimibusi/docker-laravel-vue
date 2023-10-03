@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\User;
+use App\Models\User;
 use Google_Client;
 use Google\Service\Calendar;
 use Google_Service_Calendar;

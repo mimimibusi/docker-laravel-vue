@@ -18,6 +18,9 @@
 		<router-link to="/friend">
 			友達
 		</router-link>
+		<router-link to="/chat">
+			チャット
+		</router-link>
 		<router-link to="/setting">
 			設定
 		</router-link>

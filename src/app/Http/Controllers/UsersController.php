@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Model\User;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -17,13 +17,21 @@ class UsersController extends Controller
         $this->user = $user;
     }
     
-    public function getData()
+    public function getAuthUser()
     {
         return Auth::user();
     }
 
-    public function getFriends(Request $request)
+    public function getFriends()
     {
-        return $this->user->getFriends($request->id);
+        $id = Auth::id();
+        $friends = $this->user->getFriendsByUserId($id);
+        $result = $friends->map(function($friend){
+            return [
+                'id' => $friend->id,
+                'name' => $friend->name
+            ];
+        });
+        return $result;
     }
 }

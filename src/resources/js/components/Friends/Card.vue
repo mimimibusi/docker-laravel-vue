@@ -1,10 +1,11 @@
 <template>
-	<div class="card" @click="viewModal()">
+	<div class="card" @click="getDMRoom(friendData.name)">
 		<p>{{ friendData.name }}</p>
 	</div>
 	<div v-show="modalFlag">
     <FriendModal
       :friendData="friendData"
+			:existDMRoom="existDMRoom ? true : false "
       :modalFlag="modalFlag"
       @deleteModal="deleteModal"
     />
@@ -14,7 +15,8 @@
 <script lang="ts">
 import { ref } from 'vue';
 import FriendModal from './FriendModal.vue';
-import { User } from './types';
+import { User } from '../../@types/chat';
+import axios from 'axios';
 
 export default({
 	props:{
@@ -28,9 +30,13 @@ export default({
 	},
 	setup(){
 		const modalFlag = ref<boolean>(false);
-
-		const viewModal = ()=>{
-			modalFlag.value = true;
+    const existDMRoom = ref<boolean>(false);
+		
+		const getDMRoom = async (name: string)=>{
+			await axios.get('/getDMRoom?friendName=' + name).then((res)=>{
+				existDMRoom.value = res.data;
+				modalFlag.value = true;
+			})
 		}
 
 		const deleteModal = ()=>{
@@ -39,7 +45,8 @@ export default({
 		
 		return {
 			modalFlag,
-			viewModal,
+			existDMRoom,
+			getDMRoom,
 			deleteModal
 		}
 	},

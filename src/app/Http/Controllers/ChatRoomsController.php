@@ -51,6 +51,12 @@ class ChatRoomsController extends Controller
         return $result;
     }
 
+    public function getDMRoom(Request $request)
+    {
+        $chatRoom = $this->chatRoom->getDMRoomByRoomName($request->friendName);
+        return $chatRoom;
+    }
+
     //ーーーーーーーー未開発機能ーーーーーーーーー
 
     // public function joinChatRoom(Request $request)

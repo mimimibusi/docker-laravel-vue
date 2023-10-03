@@ -1,14 +1,17 @@
 <template>
   <div id="overlay-modal" @click.stop="$emit('deleteModal')">
     <div class="base-modal">
+      <div class="modal-header">
+        <span id="close" class="btn btn-primary btn-link" @click.stop="$emit('deleteModal')">閉じる</span>
+      </div>
       <div>
         <h1>{{ friendData.name }}</h1>
       </div>
       <div class="edit-content">
-        <span @click="startChat(friendData)">チャット</span>
+        <span v-if="existDMRoom" @click="startChat(friendData)">チャット</span>
+        <span v-else @click="startChat(friendData)">チャットルーム作成</span>
         <span @click="joinChat(friendData)">グループ招待</span>
         <span id="delete" class="btn btn-primary btn-link" @click.stop="block()">ブロック</span>
-        <span id="close" class="btn btn-primary btn-link" @click.stop="$emit('deleteModal')">閉じる</span>
       </div>
     </div>
   </div>
@@ -16,7 +19,13 @@
 
 <script lang="ts">
 import axios from 'axios';
-import { User } from './types';
+import { User } from '../../@types/chat';
+import { useRouter } from 'vue-router';
+
+interface Props{
+  friendData: User,
+  modalFlag: boolean
+}
 
 export default({
   props:{
@@ -24,21 +33,25 @@ export default({
       type: Object as ()=> User,
       required: true
     },
+    existDMRoom: Boolean,
     modalFlag: Boolean
   },
   name: 'FriendModal',
-  setup(){
+  setup(props: Props){
+    const router = useRouter();
     const block = ()=>{
       console.log('Blockしたよ');
     }
 
     const startChat = async (friendData: User)=>{
       const params = {
+        friendId: friendData.id,
         roomName: friendData.name
       }
       await axios.post('/createChatRoom', params).then((res)=>{
         console.log(res.data);
         console.log('chatRoomが作れたはず');
+        router.push('/chat')
       });
     }
 

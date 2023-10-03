@@ -38,4 +38,10 @@ class ChatRoom extends Model
 		$chatRoom = self::where('room_name', '=', $roomName)->first();
 		return $chatRoom;
 	}
+
+	public function getDMRoomByRoomName($friendName)
+	{
+		$chatRoom = self::where('room_name', '=', $friendName)->whereNotIn('group_flag', [1])->first();
+		return $chatRoom;
+	}
 }

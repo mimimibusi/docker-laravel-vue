@@ -38,6 +38,8 @@ Route::middleware('auth')->group(function(){
 
     Route::get('/getFriends', 'UsersController@getFriends');
     
+    Route::get('/getDMRoom', 'ChatRoomsController@getDMRoom');
+
     Route::get('/getChattedRoomLists', 'ChatRoomsController@getChattedRoomLists');
     Route::get('/getChats', 'ChatRoomsController@getChats');
     Route::post('/createChatRoom', 'ChatRoomsController@createChatRoom');

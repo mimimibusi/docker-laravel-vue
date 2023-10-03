@@ -22,7 +22,7 @@ class User extends Model implements AuthenticatableContract
         return $this->belongsToMany(ChatRoom::class)->withTimestamps();
     }
 
-    public function getFriends(int $id)
+    public function getFriendsByUserId(int $id)
     {
         $friends = self::where('id', '!=', $id)->get();
         return $friends;

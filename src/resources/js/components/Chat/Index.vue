@@ -65,7 +65,7 @@ export default({
     }
 
     const getChat = async (roomName: string)=>{
-      await axios.get('/getChatDate?currentRoomName=' + roomName).then((res)=>{
+      await axios.get('/getChats?currentRoomName=' + roomName).then((res)=>{
         chats.value = res.data;
         console.log(res.data);
       });

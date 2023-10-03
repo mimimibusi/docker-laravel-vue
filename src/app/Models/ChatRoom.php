@@ -28,7 +28,7 @@ class ChatRoom extends Model
 
 	public function getChattedRoom()
 	{
-        $user = Auth::user();
+		$user = Auth::user();
 		$chatRoomLists = $user->chatRooms;
 		return $chatRoomLists;
 	}

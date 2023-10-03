@@ -17,7 +17,7 @@ class UsersController extends Controller
         $this->user = $user;
     }
     
-    public function getData()
+    public function getAuthUser()
     {
         return Auth::user();
     }
@@ -25,7 +25,7 @@ class UsersController extends Controller
     public function getFriends()
     {
         $id = Auth::id();
-        $friends = $this->user->getFriends($id);
+        $friends = $this->user->getFriendsByUserId($id);
         $result = $friends->map(function($friend){
             return [
                 'id' => $friend->id,

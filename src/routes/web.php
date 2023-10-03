@@ -34,12 +34,12 @@ Route::middleware('auth')->group(function(){
         return view('index');
     });
     
-    Route::get('/index', 'UsersController@getData');
+    Route::get('/getAuthUser', 'UsersController@getAuthUser');
 
     Route::get('/getFriends', 'UsersController@getFriends');
     
     Route::get('/getChattedRoomLists', 'ChatRoomsController@getChattedRoomLists');
-    Route::get('/getChatDate', 'ChatRoomsController@getChatDate');
+    Route::get('/getChats', 'ChatRoomsController@getChats');
     Route::post('/createChatRoom', 'ChatRoomsController@createChatRoom');
     
     Route::post('/sendMessage', 'ChatsController@sendMessage');

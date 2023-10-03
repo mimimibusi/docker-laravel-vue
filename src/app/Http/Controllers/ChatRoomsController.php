@@ -31,14 +31,14 @@ class ChatRoomsController extends Controller
     {
         $userId = Auth::id();
         $roomName = $request->roomName;
-        $chatRoom = $this->chatRoom->create([
-            'room_name' => $roomName
+        $chatRoom = $this->chatRoom->firstOrCreate([
+            'room_name' => $roomName, 'group_flag' => 0
         ]);
-        $chatRoom->users()->attach($userId);
+        $chatRoom->users()->syncWithoutDetaching([$userId, $request->friendId]);
         return $chatRoom->id;
     }
 
-    public function getChatDate(Request $request)
+    public function getChats(Request $request)
     {
         $chatData = $this->chatRoom->getChatRoomByRoomName($request->currentRoomName);
         $result = $chatData->chats->map(function($data){

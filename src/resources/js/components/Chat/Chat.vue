@@ -4,7 +4,7 @@
   </div>
   <div class="chat-time-line">
     <div v-for="chat in chats">
-      <span>{{ chat.message }}</span>
+      <span :class="userId === chat.userId ? 'myMessage' : 'othersMessage'" id="chat">{{ chat.userId }} : {{ userId }}</span>
     </div>
   </div>
   <div class="chat-room-textarea">
@@ -34,7 +34,8 @@ export default({
     chats: {
       type: Array as ()=> ChatData[],
       required: true
-    }
+    },
+    userId: Number
   },
   emits: ['getChat'],
   setup(props: Props, context: SetupContext){
@@ -56,3 +57,15 @@ export default({
   }
 })
 </script>
+
+<style>
+#chat{
+  color: white;
+}
+.myMessage{
+  background-color: rgb(230, 134, 25);
+}
+.othersMessage{
+  background-color: rgb(107, 107, 107);
+}
+</style>

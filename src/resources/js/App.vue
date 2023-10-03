@@ -22,12 +22,12 @@ export default defineComponent({
   setup() {
     const hello = ref<string>("TypeScript");
     const user = ref<string>("");
-    const getUsers = async () => {
+    const getAuthUser = async () => {
       const { data } = await axios.get("/getAuthUser");
       user.value = data.name;
     };
     onMounted(() => {
-      getUsers();
+      getAuthUser();
     });
     return {
       hello,

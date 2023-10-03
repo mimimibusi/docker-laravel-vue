@@ -25,6 +25,7 @@
         v-if="mount"
         :roomName="chattedRoomLists[currentChatRoom].roomName"
         :chats="chats"
+        :userId="userId"
         @getChat="getChat"
       />
     </div>
@@ -48,6 +49,7 @@ export default({
     const chattedRoomLists = ref<ChatRoom[]>([]);
     const chats = ref<ChatData[]>([]);
     const currentChatRoom = ref<number>(0);
+    const userId = ref(0);
     const mount = ref<boolean>(false);
 
     const selectChatRoom = (id: number)=>{
@@ -56,6 +58,11 @@ export default({
       getChat(chattedRoomLists.value[currentChatRoom.value].roomName);
       mount.value = true;
     };
+
+    const getAuthUser = async ()=>{
+      const { data } = await axios.get("/getAuthUser");
+      userId.value = data.id;
+    }
 
     const getChattedRoomLists = async () => {
       await axios.get('/getChattedRoomLists').then((res)=>{
@@ -72,6 +79,7 @@ export default({
     }
 
     onMounted(async ()=>{
+      getAuthUser();
       await getChattedRoomLists();
       await getChat(chattedRoomLists.value[currentChatRoom.value].roomName);
     })
@@ -81,6 +89,7 @@ export default({
       chattedRoomLists,
       chats,
       currentChatRoom,
+      userId,
       mount,
       selectChatRoom,
       getChat,

@@ -9,10 +9,11 @@
 	<div v-else>友達いないおー；；</div>
 </template>
 
-<script>
-import { ref, reactive, onMounted } from 'vue';
+<script lang="ts">
+import { ref, onMounted } from 'vue';
 import axios from 'axios'
 import Card from './Card.vue';
+import { User } from '../../@types/chat';
 
 export default({
 	components:{
@@ -21,7 +22,8 @@ export default({
 	name: 'Friend',
 	setup(){
 		const title = '友達一覧';
-		const friendLists = ref([]);
+		const friendLists = ref<User[]>([]);
+
 		const getFriends = async ()=>{
 			await axios.get('/getFriends').then((res)=>{
 				console.log(res.data);
@@ -29,6 +31,7 @@ export default({
 			});
 			console.log(friendLists.value);
 		}
+
 		onMounted(()=>{
 			getFriends();
 		})
